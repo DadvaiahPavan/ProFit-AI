@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProFit-AI - Workout Plan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        .workout-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .workout-form:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        .workout-plan {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .workout-plan-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h3 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .section ul li {
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 5px;
+        }
+
+        .section ul li:hover {
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        #download-workout-plan {
+            margin-top: 2rem;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+
+        #download-workout-plan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        /* Loading Animation Styles */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            pointer-events: all;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            position: absolute;
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 120px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">ProFit-AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/workout"><i class="fas fa-dumbbell"></i> Workout Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/diet"><i class="fas fa-utensils"></i> Diet Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="workout-form" data-aos="fade-up">
+                    <h2 class="text-center mb-4">Generate Your Workout Plan</h2>
+                    <form action="/generate_workout" method="POST" id="workoutForm">
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="weight" name="weight" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="height" class="form-label">Height (cm)</label>
+                            <input type="number" class="form-control" id="height" name="height" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="goal" class="form-label">Fitness Goal</label>
+                            <select class="form-select" id="goal" name="goal" required>
+                                <option value="">Choose...</option>
+                                <option value="weight_loss">Weight Loss</option>
+                                <option value="muscle_gain">Muscle Gain</option>
+                                <option value="endurance">Endurance</option>
+                                <option value="strength">Strength</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="experience" class="form-label">Experience Level</label>
+                            <select class="form-select" id="experience" name="experience" required>
+                                <option value="">Choose...</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="equipment" class="form-label">Available Equipment</label>
+                            <select class="form-select" id="equipment" name="equipment" required>
+                                <option value="">Choose...</option>
+                                <option value="none">No Equipment (Bodyweight)</option>
+                                <option value="basic">Basic (Dumbbells, Resistance Bands)</option>
+                                <option value="full">Full Gym Access</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Generate Plan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="workout-plan-result" class="workout-plan" style="display: none;">
+            <!-- Workout plan will be displayed here -->
+        </div>
+        <button id="download-workout-plan" class="btn btn-success mt-3" style="display: none;">
+            <i class="fas fa-download"></i> Download Workout Plan
+        </button>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="d-flex flex-column align-items-center">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Generating your personalized plan...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+        
+        // Form submission handler
+        document.getElementById('workoutForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent default form submission
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('show');
+            
+            // Submit the form after showing the loading animation
+            const formData = new FormData(this);
+            const response = await fetch('/generate_workout_plan', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            // Hide loading animation
+            loadingOverlay.classList.remove('show');
+            
+            // Display the workout plan
+            const workoutPlanResult = document.getElementById('workout-plan-result');
+            workoutPlanResult.innerHTML = result.workout_plan;
+            workoutPlanResult.style.display = 'block';
+            
+            // Show download button
+            document.getElementById('download-workout-plan').style.display = 'block';
+        });
+
+        document.getElementById('download-workout-plan').addEventListener('click', function() {
+            const workoutPlan = document.getElementById('workout-plan-result').innerHTML;
+            const blob = new Blob([workoutPlan], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'workout_plan.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        });
+    </script>
+</body>
+</html>

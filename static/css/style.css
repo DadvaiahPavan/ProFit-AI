@@ -1,0 +1,104 @@
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+/* Custom Styles */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    border: none;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(75,108,183,0.4);
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #e1e1e1;
+    padding: 12px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(75,108,183,0.2);
+    border-color: #4b6cb7;
+}
+
+.workout-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.workout-day {
+    font-weight: bold;
+    color: #4b6cb7;
+    margin-bottom: 10px;
+}
+
+.exercise-list {
+    list-style: none;
+    padding: 0;
+}
+
+.exercise-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* Auth Forms */
+.auth-container {
+    max-width: 400px;
+    margin: 40px auto;
+}
+
+.auth-tabs {
+    margin-bottom: 20px;
+}
+
+.auth-form {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

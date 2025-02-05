@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProFit-AI - Diet Plan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        .diet-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .diet-form:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        .diet-plan {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .diet-plan-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            max-height: 80vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+        }
+
+        .diet-plan-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .diet-plan-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .diet-plan-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .weekly-plan {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .day-plan {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .day-plan h4 {
+            color: #f1c40f;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meal {
+            margin: 1.5rem 0;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .meal h5 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .meal ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .meal ul li {
+            margin-bottom: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 5px;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .meal-times {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .meal-times ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .meal-times ul li {
+            margin-bottom: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 5px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h3 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .section ul li {
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 5px;
+        }
+
+        #download-diet-plan {
+            position: sticky;
+            bottom: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        #download-diet-plan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Loading Animation Styles */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            pointer-events: all;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            position: absolute;
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 120px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">ProFit-AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/workout"><i class="fas fa-dumbbell"></i> Workout Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/diet"><i class="fas fa-utensils"></i> Diet Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="diet-form" data-aos="fade-up">
+                    <h2 class="text-center mb-4">Generate Your Diet Plan</h2>
+                    <form action="/generate_diet" method="POST" id="dietForm">
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="weight" name="weight" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="height" class="form-label">Height (cm)</label>
+                            <input type="number" class="form-control" id="height" name="height" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="goal" class="form-label">Diet Goal</label>
+                            <select class="form-select" id="goal" name="goal" required>
+                                <option value="">Choose...</option>
+                                <option value="weight_loss">Weight Loss</option>
+                                <option value="muscle_gain">Muscle Gain</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="health">General Health</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dietary_restrictions" class="form-label">Dietary Restrictions</label>
+                            <select class="form-select" id="dietary_restrictions" name="dietary_restrictions" required>
+                                <option value="">Choose...</option>
+                                <option value="vegetarian">Vegetarian</option>
+                                <option value="non-vegetarian">Non-Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="meals_per_day" class="form-label">Preferred Meals per Day</label>
+                            <select class="form-select" id="meals_per_day" name="meals_per_day" required>
+                                <option value="3">3 Meals</option>
+                                <option value="4">4 Meals</option>
+                                <option value="5">5 Meals</option>
+                                <option value="6">6 Meals</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Generate Diet Plan</button>
+                    </form>
+                    <div id="diet-plan-result" class="diet-plan" style="display: none;">
+                        <!-- Diet plan will be displayed here -->
+                    </div>
+                    <button id="download-diet-plan" class="btn btn-success mt-3" style="display: none;">
+                        <i class="fas fa-download"></i> Download Diet Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="d-flex flex-column align-items-center">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Generating your personalized plan...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+        
+        // Form submission handler
+        document.getElementById('dietForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading animation
+            document.querySelector('.loading-overlay').classList.add('show');
+            
+            const formData = new FormData(this);
+            const response = await fetch('/generate_diet', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            // Hide loading animation
+            document.querySelector('.loading-overlay').classList.remove('show');
+            
+            // Display the diet plan
+            const dietPlanResult = document.getElementById('diet-plan-result');
+            dietPlanResult.innerHTML = result.diet_plan;
+            dietPlanResult.style.display = 'block';
+            
+            // Show download button
+            document.getElementById('download-diet-plan').style.display = 'block';
+        });
+
+        document.getElementById('download-diet-plan').addEventListener('click', function() {
+            const dietPlan = document.getElementById('diet-plan-result').innerHTML;
+            const blob = new Blob([dietPlan], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'diet_plan.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        });
+    </script>
+</body>
+</html>
