@@ -32,7 +32,13 @@ CORS(app)
 
 # Configure database
 logger.debug(f"Database URL: {os.getenv('DATABASE_URL', 'sqlite:///instance/workout_planner.db')}")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///instance/workout_planner.db')
+if os.getenv('VERCEL_ENV') == 'production':
+    # Use PostgreSQL for production
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+else:
+    # Use SQLite for development
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///instance/workout_planner.db')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Set secret key
