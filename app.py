@@ -103,15 +103,54 @@ def generate_workout_plan(preferences):
         
         prompt = f"""Generate a detailed workout plan based on the following preferences:
         {preferences}
-        ... (rest of your prompt) ...
-        """
+        
+        The plan should be formatted in HTML with the following structure:
+        
+        <div class="workout-plan-content">
+            <div class="section">
+                <h3>Warm-up Routine (10-15 minutes)</h3>
+                <ul>
+                    [List warm-up exercises with duration/reps]
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>Main Workout</h3>
+                <ul>
+                    [List exercises with sets, reps, and rest periods]
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>Cool-down Routine (10-15 minutes)</h3>
+                <ul>
+                    [List cool-down exercises with duration]
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>Weekly Schedule</h3>
+                <ul>
+                    [List workout schedule for each day]
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>Form Tips & Notes</h3>
+                <ul>
+                    [List important form tips and notes]
+                </ul>
+            </div>
+        </div>
+        
+        Make sure to include specific exercises, sets, reps, and rest periods. Format all lists and sections properly in HTML."""
 
         logger.debug("Sending request to Groq API")
         chat_completion = groq_client.chat.completions.create(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a professional fitness trainer creating personalized workout plans."
+                    "content": "You are a professional fitness trainer creating personalized workout plans. Always format the response in clean HTML with proper sections and styling classes."
                 },
                 {
                     "role": "user",
@@ -123,6 +162,7 @@ def generate_workout_plan(preferences):
             max_tokens=1024
         )
         logger.debug("Received response from Groq API")
+
         return chat_completion.choices[0].message.content
     except Exception as e:
         logger.error(f"Error generating workout plan: {str(e)}", exc_info=True)
